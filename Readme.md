@@ -1,6 +1,6 @@
 <!-- lint-staged -->
 
-# mrm-task-lint-staged
+# mrm-task-lint-staged-wonderment
 
 [Mrm](https://github.com/sapegin/mrm) task that adds [lint-staged](https://github.com/okonet/lint-staged).
 
