@@ -1,6 +1,6 @@
 {
 	"name": "mrm-task-lint-staged-wonderment",
-	"version": "6.0.0",
+	"version": "1.0.0",
 	"description": "Mrm task that adds lint-staged",
 	"author": {
 		"name": "Artem Sapegin, Giorgi Gelashvili",
@@ -24,6 +24,7 @@
 		"lint"
 	],
 	"dependencies": {
+		"editorconfig-to-prettier": "0.1.1",
 		"husky": "^6.0.0",
 		"lodash": "^4.17.15",
 		"mrm-core": "^6.0.0"

@@ -16,7 +16,7 @@ const husky = require('husky');
 const vol = require('memfs').vol;
 const task = require('./index');
 
-const stringify = o => JSON.stringify(o, null, '  ');
+const stringify = (o) => JSON.stringify(o, null, '  ');
 
 const packageJson = stringify({
 	name: 'unicorn',
@@ -297,7 +297,9 @@ it('should add a custom rule', async () => {
 
 	task(
 		await getTaskOptions(task, false, {
-			lintStagedRules: { false: { extensions: ['js'], command: 'false' } },
+			lintStagedRules: {
+				false: { extensions: ['js'], command: 'false' },
+			},
 		})
 	);
 

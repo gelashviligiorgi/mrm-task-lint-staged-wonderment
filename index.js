@@ -1,3 +1,12 @@
+// const prettier = require('./prettier');
+// const lintStaged = require('./lint-staged');
+
+// module.exports = function task({ ...args }) {
+// 	console.log('\n\n\n', args, '\n\n\n');
+// 	prettier.task({ ...args });
+// 	lintStaged({ ...args });
+// };
+
 // @ts-check
 const {
 	packageJson,
@@ -8,10 +17,25 @@ const {
 const { isUsingYarnBerry } = require('mrm-core/src/npm');
 const { castArray } = require('lodash');
 const husky = require('husky');
+const prettier = require('./prettier');
 
 const packages = {
-	'lint-staged': '>=10',
+	eslint: '^7.24.0',
 	husky: '>=6',
+	prettier: '^2.2.1',
+	stylelint: '^13.12.0',
+	'lint-staged': '>=10',
+	'eslint-config-prettier': '^7.2.0',
+	'eslint-config-react-app': '^6.0.0',
+	'eslint-plugin-import': '^2.22.1',
+	'eslint-plugin-jest': '^24.3.2',
+	'eslint-plugin-lodash': '^7.2.0',
+	'eslint-plugin-react': '^7.22.0',
+	'eslint-plugin-react-hooks': '^4.2.0',
+	'eslint-plugin-testing-library': '^4.1.1',
+	'eslint-plugin-flowtype': '^5.7.1',
+	'eslint-plugin-jsx-a11y': '^6.4.1',
+	'babel-eslint': '^10.1.0',
 };
 
 /**
@@ -28,27 +52,25 @@ const defaultRules = [
 	// ESLint
 	{
 		name: 'eslint',
-		condition: (pkg) => !!pkg.get('devDependencies.eslint'),
+		condition: (pkg) => true,
 		extensions: ['js', 'jsx'],
 		script: 'lint',
 		param: 'ext',
-		command: 'eslint --cache --fix',
+		command: 'eslint --cache --fix  --max-warnings 0',
 	},
 	// Stylelint
 	{
 		name: 'stylelint',
-		condition: (pkg) => !!pkg.get('devDependencies.stylelint'),
-		extensions: ['css'],
+		condition: (pkg) => true,
+		extensions: ['css', 'scss', 'less'],
 		script: 'lint:css',
 		command: 'stylelint --fix',
 	},
 	// Prettier
 	{
 		name: 'prettier',
-		condition: (pkg) =>
-			!!pkg.get('devDependencies.prettier') &&
-			!pkg.get('devDependencies.eslint-plugin-prettier'),
-		extensions: ['js', 'css', 'md'],
+		condition: (pkg) => true,
+		extensions: ['js', 'jsx', 'css', 'md'],
 		script: 'format',
 		command: 'prettier --write',
 	},
@@ -116,7 +138,9 @@ function isCommandBelongsToRule(ruleCommands, command) {
 	return castArray(ruleCommands).some((x) => regExp.test(x));
 }
 
-module.exports = function task({ lintStagedRules }) {
+module.exports = function task(params) {
+	const { lintStagedRules } = params;
+
 	const pkg = packageJson();
 	const allRules = mergeRules(defaultRules, lintStagedRules);
 	const existingRules = Object.entries(pkg.get('lint-staged', {}));
@@ -218,6 +242,8 @@ module.exports = function task({ lintStagedRules }) {
 	husky.install();
 	// Set lint-staged config
 	husky.add('.husky/pre-commit', 'npx lint-staged');
+
+	prettier.task(params);
 };
 
 module.exports.description = 'Adds lint-staged';
