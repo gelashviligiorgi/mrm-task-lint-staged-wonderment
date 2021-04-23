@@ -1,12 +1,3 @@
-// const prettier = require('./prettier');
-// const lintStaged = require('./lint-staged');
-
-// module.exports = function task({ ...args }) {
-// 	console.log('\n\n\n', args, '\n\n\n');
-// 	prettier.task({ ...args });
-// 	lintStaged({ ...args });
-// };
-
 // @ts-check
 const {
 	packageJson,

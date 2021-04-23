@@ -1,13 +1,13 @@
 {
 	"name": "mrm-task-lint-staged-wonderment",
-	"version": "1.0.1",
-	"description": "Mrm task that adds lint-staged",
+	"version": "1.0.2",
+	"description": "Mrm task that adds lint-staged prettier configs with required packages",
 	"author": {
 		"name": "Artem Sapegin, Giorgi Gelashvili",
 		"url": "http://sapegin.me"
 	},
-	"homepage": "https://github.com/sapegin/mrm/packages/mrm-task-lint-staged",
-	"repository": "sapegin/mrm",
+	"homepage": "https://github.com/georginio/mrm-task-lint-staged-wonderment",
+	"repository": "georginio/mrm-task-lint-staged-wonderment",
 	"license": "MIT",
 	"engines": {
 		"node": ">=10.13"
