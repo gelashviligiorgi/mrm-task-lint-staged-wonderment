@@ -1,6 +1,6 @@
 {
 	"name": "mrm-task-lint-staged-wonderment",
-	"version": "1.0.4",
+	"version": "1.0.5",
 	"description": "Mrm task that adds lint-staged prettier configs with required packages",
 	"author": {
 		"name": "Artem Sapegin, Giorgi Gelashvili",
@@ -15,7 +15,8 @@
 	"main": "index.js",
 	"files": [
 		"index.js",
-		"prettier.js"
+		"prettier.js",
+		"lint-staged.js"
 	],
 	"scripts": {},
 	"keywords": [
