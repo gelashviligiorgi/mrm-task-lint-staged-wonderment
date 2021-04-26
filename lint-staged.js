@@ -1,11 +1,5 @@
 // @ts-check
-const {
-	packageJson,
-	install,
-	getExtsFromCommand,
-	uninstall,
-	lines,
-} = require('mrm-core');
+const { packageJson, install, uninstall, lines } = require('mrm-core');
 const { isUsingYarnBerry } = require('mrm-core/src/npm');
 const { castArray } = require('lodash');
 const husky = require('husky');
@@ -43,7 +37,6 @@ const defaultRules = [
 	// ESLint
 	{
 		name: 'eslint',
-		condition: (pkg) => true,
 		extensions: ['js', 'jsx'],
 		script: 'lint',
 		param: 'ext',
@@ -52,7 +45,6 @@ const defaultRules = [
 	// Stylelint
 	{
 		name: 'stylelint',
-		condition: (pkg) => true,
 		extensions: ['css', 'scss', 'less'],
 		script: 'lint:css',
 		command: 'stylelint --fix',
@@ -60,34 +52,11 @@ const defaultRules = [
 	// Prettier
 	{
 		name: 'prettier',
-		condition: (pkg) => true,
 		extensions: ['js', 'jsx', 'css', 'md'],
 		script: 'format',
 		command: 'prettier --write',
 	},
 ];
-
-/**
- * Merge default rules with user overrides
- *
- * @param {Array} defaults
- * @param {Object} overrides
- */
-function mergeRules(defaults, overrides) {
-	// Overrides for default rules
-	const rulesWithOverrides = defaults.map((rule) => ({
-		...rule,
-		...overrides[rule.name],
-	}));
-
-	// Custom rules
-	return Object.entries(overrides).reduce((acc, [name, rule]) => {
-		if (acc.some((x) => x.name === name)) {
-			return acc;
-		}
-		return [...acc, rule];
-	}, rulesWithOverrides);
-}
 
 /**
  * Convert an array of extensions to a glob pattern
@@ -104,78 +73,19 @@ function extsToGlob(exts) {
 	return `*.${exts}`;
 }
 
-/**
- * Generate a regular expression to detect a rule in existing rules. For simplicity
- * assumes that the first word in the command is the binary you're running.
- *
- * Example: 'eslint --fix' -> /\beslint\b/
- *
- * TODO: Allow overriding for more complex commands
- *
- * @param {string} command
- */
-function getRuleRegExp(command) {
-	return new RegExp(`\\b${command.split(' ').shift()}\\b`);
-}
-
-/**
- * Check if a given command belongs to a rule
- *
- * @param {string | string[]} ruleCommands
- * @param {string} command
- */
-function isCommandBelongsToRule(ruleCommands, command) {
-	const regExp = getRuleRegExp(command);
-	return castArray(ruleCommands).some((x) => regExp.test(x));
-}
-
-module.exports.task = function task(params) {
-	const { lintStagedRules = {} } = params;
-
+module.exports.task = function task() {
 	const pkg = packageJson();
-	const allRules = mergeRules(defaultRules, lintStagedRules);
-	const existingRules = Object.entries(pkg.get('lint-staged', {}));
-
-	// Remove exising rules that run any of default commands
-	const commandsToRemove = allRules.map((rule) => rule.command);
-	const existingRulesToKeep = existingRules.filter(([, ruleCommands]) =>
-		commandsToRemove
-			.map((command) => isCommandBelongsToRule(ruleCommands, command))
-			.every((x) => x === false)
-	);
 
 	// New rules
-	const rulesToAdd = allRules.map(
-		({
-			condition = () => true,
-			extensions: defaultExtensions,
-			script,
-			param,
-			command,
-			enabled = true,
-		}) => {
-			if (!enabled || !condition(pkg)) {
-				return null;
-			}
-
-			const extensions =
-				getExtsFromCommand(pkg.getScript(script), param) ||
-				defaultExtensions;
-			const pattern = extsToGlob(extensions);
-
-			return [pattern, command];
-		}
-	);
-
-	// Merge existing and new rules, clean up
-	const rulesToWrite = [...existingRulesToKeep, ...rulesToAdd].filter(
-		Boolean
-	);
+	const rulesToAdd = defaultRules.map(({ extensions, command }) => {
+		const pattern = extsToGlob(extensions);
+		return [pattern, command];
+	});
 
 	// Merge rules with the same pattern and convert to an object
 	// Wrap commands in an array only when a pattern has multiple commands
 	const rules = {};
-	rulesToWrite.forEach(([pattern, command]) => {
+	rulesToAdd.forEach(([pattern, command]) => {
 		if (rules[pattern]) {
 			rules[pattern] = [...castArray(rules[pattern]), command];
 		} else {
@@ -239,9 +149,3 @@ module.exports.task = function task(params) {
 };
 
 module.exports.description = 'Adds lint-staged';
-module.exports.parameters = {
-	lintStagedRules: {
-		type: 'config',
-		default: {},
-	},
-};
