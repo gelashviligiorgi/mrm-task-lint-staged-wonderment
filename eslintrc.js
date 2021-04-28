@@ -18,6 +18,7 @@ const rules = {
 	plugins: ['react'],
 	rules: {
 		'react/prop-types': 0,
+		'react/react-in-jsx-scope': 0, // disable for next.js
 	},
 	settings: {
 		react: {

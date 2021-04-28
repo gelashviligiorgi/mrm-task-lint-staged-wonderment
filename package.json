@@ -1,6 +1,6 @@
 {
 	"name": "mrm-task-lint-staged-wonderment",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"description": "Mrm task that adds lint-staged prettier configs with required packages",
 	"author": {
 		"name": "Artem Sapegin, Giorgi Gelashvili",
