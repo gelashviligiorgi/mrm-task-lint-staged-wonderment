@@ -27,3 +27,9 @@ OR
 ```
 npx mrm mrm-task-lint-staged-wonderment
 ```
+
+With `next.js`
+
+```
+npx -p npm@6 mrm mrm-task-lint-staged-wonderment
+```

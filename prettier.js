@@ -31,22 +31,20 @@ function removeDefaultOptions(options) {
 	return newOptions;
 }
 
-module.exports.task = function ({ prettierOptions }) {
+module.exports.task = function () {
 	// Try to read options from EditorConfig
 	const testJsFile = path.join(process.cwd(), 'test.js');
 	const editorconfigOptions = editorConfigToPrettier(
 		getStyleForFile(testJsFile)
 	);
 
-	const options = removeDefaultOptions(
-		Object.assign({}, editorconfigOptions, prettierOptions)
-	);
-
 	// .prettierrc
 	const prettierrc = json('.prettierrc');
 
 	// Update options and save
-	prettierrc.merge(Object.assign({}, defaultPrettierOptions, options)).save();
+	prettierrc
+		.merge(Object.assign({}, defaultPrettierOptions, editorconfigOptions))
+		.save();
 
 	// Dependencies
 	install(packages);

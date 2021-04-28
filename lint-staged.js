@@ -136,9 +136,6 @@ module.exports.task = function task() {
 
 	pkg.save();
 
-	// adding ./husky to gitignore
-	lines('.gitignore').add(['.husky']).save();
-
 	uninstall('simple-git-hooks');
 	// Install dependencies
 	install(packages);
